@@ -3,15 +3,17 @@
  *@author John Pignato
  */
 abstract class Killable{
+  private String ownerName;
   private float health; //current health of killable
   private PImage img; //Image representing Killable on GUI
-  private final int allWidth = 50;
-  private final int allHeight = 50;
   private float[] coordinates = new float[2]; //Pos 0 holds x coordinate and Pos 1 holds y
   private PImage[] boom = new PImage[9]; //Holds loaded images for explode()
+  private final int ALLWIDTH = 50;
+  private final int ALLHEIGHT = 50;
   
-  Killable(float health, float xCenter, float yCenter, String imageName){
+  Killable(float health, float xCenter, float yCenter, String imageName, String name){
     this.health = health;
+    ownerName = name;
     coordinates[0] = xCenter;
     coordinates[1] = yCenter;
     img = loadImage("./images/"+imageName);
@@ -23,6 +25,8 @@ abstract class Killable{
   
   final float[] getCenterPoint(){return coordinates;}
   
+  final String getOwnerName(){return ownerName;}
+  
   /**@return true if health <= 0*/
   final boolean isDead(){
     return(health <= 0);
@@ -33,8 +37,9 @@ abstract class Killable{
     * @param centerX updated 
     */
   final void updateCoordinates(float centerX, float centerY){
-    coordinates[0] = (centerX != -1) ? centerX: coordinates[0];
-    coordinates[1] = (centerY != -1) ? centerY: coordinates[1];
+      //print("Update: " + coordinates[0] +" Shifitng to "+ centerX+"\n------\n");
+      coordinates[0] = (centerX != -1 && centerX < width && centerX > 0) ? centerX: coordinates[0];
+      coordinates[1] = (centerY != -1 && centerY < height && centerY > 0) ? centerY: coordinates[1];
   }
   
   /**
@@ -48,15 +53,15 @@ abstract class Killable{
   }
   
   void display(){
-    image(img, coordinates[0], coordinates[1], allWidth, allHeight);
+    image(img, coordinates[0], coordinates[1], ALLWIDTH, ALLHEIGHT);
   }
   
   void explode(){
     for(int i = 0; i < boom.length; i++)
-      image(boom[frameCount%boom.length], coordinates[0], coordinates[1], allWidth, allHeight);
+      image(boom[frameCount%boom.length], coordinates[0], coordinates[1], ALLWIDTH, ALLHEIGHT);
   }
   
-  boolean isHit(float x,float y){
-    return Math.abs(coordinates[0]-x) <= allWidth && Math.abs(coordinates[1]-y) <= allHeight;
+  boolean isHit(Laser l){
+    return Math.abs(coordinates[0]-l.getCenterPoint()[0]) <= ALLWIDTH && Math.abs(coordinates[1]-l.getCenterPoint()[1]) <= ALLHEIGHT;
   };
 }
