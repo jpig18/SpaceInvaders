@@ -44,7 +44,7 @@ class Mothership{
     if(newLevel){
       bouncesThisLevel = 0;
       currentLevel++;
-      fireFrequency-=25;
+      fireFrequency-=50;
     }
     updateBounceTracker();
   }
