@@ -25,7 +25,6 @@ void theBackground(){
   stroke(#F9FF4D);
   strokeWeight(5);
   rect(0,0, width, height, 0);
-  
 }
 
 void keyPressed(){
