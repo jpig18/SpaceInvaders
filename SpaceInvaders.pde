@@ -1,8 +1,10 @@
 Starship player;
 Mothership invader;
+int lives;
 
 void setup(){
   fullScreen();
+  lives = 3;
   player = new Starship();
   invader = new Mothership();
   background(0);
@@ -15,6 +17,20 @@ void draw(){
   //if(!player.isDead())
   player.update();
   invader.update(player.getLaser());
+  ArrayList<Laser> activeLasers = invader.getSpaceInvaderLasers();
+  for(Laser laser: activeLasers){
+    if(player.isHit(laser)){
+      lives--;
+      player.explode();
+      player.receiveDamage(laser.getDamage());
+      laser.laserDestroyed();
+      if(lives <= 0){
+        System.out.println("Game over");
+        noLoop();
+      }
+      break;
+    }
+  }
   //delay(300);
   //player.receiveDamage(100);
 }

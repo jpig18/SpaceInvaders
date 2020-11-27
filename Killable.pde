@@ -57,8 +57,10 @@ abstract class Killable{
   }
   
   void explode(){
+    frameRate(11);
     for(int i = 0; i < boom.length; i++)
       image(boom[frameCount%boom.length], coordinates[0], coordinates[1], ALLWIDTH, ALLHEIGHT);
+    frameRate(60);
   }
   
   boolean isHit(Laser l){
