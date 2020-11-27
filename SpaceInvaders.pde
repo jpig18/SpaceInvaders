@@ -14,7 +14,7 @@ void draw(){
   
   //if(!player.isDead())
   player.update();
-  invader.update();
+  invader.update(player.getLaser());
   //delay(300);
   //player.receiveDamage(100);
 }

@@ -1,6 +1,6 @@
 class Laser extends Movable{
   
-  private boolean laserRecharging = false;
+  private boolean laserRecharging  = false;
   private final static int DAMAGE = 100;
   private final static String IMGNAME = "laser.png";
   
@@ -30,6 +30,8 @@ class Laser extends Movable{
   
   @Override
   public void update(){
+    if(!laserRecharging) //shiftUp & shiftDown error
+      return;
     float current = (getOwnerName().contains("Starship")) ? shiftUp(): shiftDown();
     if(current <= 0 || current >= height)
       laserRecharging = false;
@@ -56,7 +58,16 @@ class Laser extends Movable{
     return false;
   }
   
-  //public void laserDestroyed(){
-  //  laserRecharging = false;
-  //}
+  public void laserDestroyed(){
+    laserRecharging = false;
+    updateCoordinates(-100,-100);
+  }
+  
+   public boolean laserActive(){
+     return laserRecharging;
+   } 
+  
+  public int getDamage(){
+    return DAMAGE;
+  }
 }

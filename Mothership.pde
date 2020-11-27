@@ -28,34 +28,46 @@ class Mothership{
     }
   }
   
-  public void update(){     
-    boolean newLevel = false;
+  public void update(Laser starShipLaser){     
+    boolean newLevel = false; //Level tracker
+    
     for(SpaceInvader attacker: invaders){
-      if (bouncesThisLevel == NUMBER_OF_BOUNCES_PER_LEVEL){
-        attacker.update(leftDirection, true);
-        leftDirection = !leftDirection;
-        attacker.getLaser().setSpeed(currentLevel+5);
-        newLevel = true;
+      if(attacker.isDead())
+        continue;
+      else{
+        if (bouncesThisLevel == NUMBER_OF_BOUNCES_PER_LEVEL){ //If new level: move space invaders down, increase laser speed, set newLevel flag to true
+          attacker.update(leftDirection, true);
+          leftDirection = !leftDirection;
+          attacker.getLaser().setSpeed(currentLevel+5);
+          newLevel = true;
+        }
+        if (!attacker.isDead() && starShipLaser.laserActive() && attacker.isHit(starShipLaser)){
+          starShipLaser.laserDestroyed();
+          attacker.receiveDamage(starShipLaser.getDamage());
+          attacker.explode();  
+        }
+        attacker.update(leftDirection, false);
+        if(rand.nextInt(fireFrequency) == 7) // (1/fireFrequency) percent chance of firing laser per frame
+          attacker.fireGun();
       }
-      attacker.update(leftDirection, false);
-      if(rand.nextInt(fireFrequency) == 7) //1/NUMBER_OF_INVADERS percent chance of firing laser
-        attacker.fireGun();
     }
     if(newLevel){
       bouncesThisLevel = 0;
       currentLevel++;
-      fireFrequency-=50;
+      fireFrequency-=100;
     }
     updateBounceTracker();
   }
   
   private void updateBounceTracker(){
     //Find new leader
-    int leaderPos = Integer.MAX_VALUE;
+    int leaderPos = (leftDirection) ? Integer.MAX_VALUE: -1;
+    println(leftDirection);
     for(int i = 0; i < NUMBER_OF_INVADERS; i++)
-      if(!invaders.get(i).isDead() && (i%(NUMBER_OF_INVADERS/3) < leaderPos && leftDirection) || ((NUMBER_OF_INVADERS/3)-i < leaderPos && !leftDirection))
+      if((!invaders.get(i).isDead()) && ((i%(NUMBER_OF_INVADERS/3) < leaderPos && leftDirection) || (i%(NUMBER_OF_INVADERS/3) > leaderPos && !leftDirection)))
         leaderPos = i;
-        
+     
+    println(leaderPos);
     if(invaders.get(leaderPos).hitBoundary()){
       bouncesThisLevel++;   
       leftDirection = !leftDirection;
