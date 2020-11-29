@@ -7,7 +7,7 @@ class Mothership{
   private ArrayList<SpaceInvader> invaders;
   private ArrayList<Laser> activeLasers;
   private final int NUMBER_OF_INVADERS = 24;
-  private final int NUMBER_OF_BOUNCES_PER_LEVEL = 3;
+  private final int NUMBER_OF_BOUNCES_PER_LEVEL = 2;
   private final float INITIALIZED_LEAD_INVADER_XPOS = width/2-(50*((NUMBER_OF_INVADERS/3)/2));
   private int bouncesThisLevel = 0;
   private int movementSpeed = 1;

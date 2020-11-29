@@ -1,5 +1,6 @@
 Starship player;
 ArrayList <Mothership> invaders;
+Mothership nextMothership;
 int lives;
 
 void setup(){
@@ -8,6 +9,7 @@ void setup(){
   player = new Starship();
   invaders = new ArrayList();
   invaders.add(new Mothership());
+  thread("newMothershipCreator");
   background(0);
 }
 
@@ -22,7 +24,8 @@ void draw(){
       ptsToAdd = commandship.update(player.getLaser()); //Update mothership
     } catch(Exception ConcurrentModificationException) {
       ptsToAdd = -1;
-      invaders.add(new Mothership());
+      invaders.add(nextMothership);
+      thread("newMothershipCreator"); //avoids long hault in graphics during object creation
     }
     if(ptsToAdd == -1){
       invaders.remove(commandship);
@@ -45,8 +48,14 @@ void draw(){
       }
     }
   }
- if(frameCount%4000==0 || invaders.size() == 0)
-  invaders.add(new Mothership());
+ if(frameCount%4000==0 || invaders.size() == 0){
+  invaders.add(nextMothership);
+  thread("newMothershipCreator");
+ }
+}
+
+void newMothershipCreator(){
+  nextMothership = new Mothership();
 }
 
 void theBackground(){
