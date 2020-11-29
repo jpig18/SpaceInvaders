@@ -1,5 +1,3 @@
-import java.util.ListIterator;
-
 Starship player;
 ArrayList <Mothership> invaders;
 int lives;
@@ -17,23 +15,21 @@ void setup(){
 void draw(){
   theBackground();
     
-  ListIterator<Mothership> iter = invaders.listIterator();
-  while(iter.hasNext()){
-    int index = iter.nextIndex(); //Rather stash int than massive mothership object in memory
+  for(Mothership commandship: new ArrayList<Mothership>(invaders)){
     player.update();
     int ptsToAdd;
     try{
-      ptsToAdd = iter.next().update(player.getLaser()); //Update mothership
+      ptsToAdd = commandship.update(player.getLaser()); //Update mothership
     } catch(Exception ConcurrentModificationException) {
       ptsToAdd = -1;
-      iter.add(new Mothership());
+      invaders.add(new Mothership());
     }
     if(ptsToAdd == -1){
-      invaders.remove(index);
+      invaders.remove(commandship);
       continue;
     }
     else{
-      ArrayList<Laser> activeLasers = invaders.get(index).getSpaceInvaderLasers();
+      ArrayList<Laser> activeLasers = commandship.getSpaceInvaderLasers();
       for(Laser laser: activeLasers){
         if(player.isHit(laser)){
           lives--;
@@ -49,7 +45,7 @@ void draw(){
       }
     }
   }
- if(frameCount%4500==0 || invaders.size() == 0)
+ if(frameCount%4000==0 || invaders.size() == 0)
   invaders.add(new Mothership());
 }
 
