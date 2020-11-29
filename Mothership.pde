@@ -7,7 +7,7 @@ class Mothership{
   private ArrayList<SpaceInvader> invaders;
   private ArrayList<Laser> activeLasers;
   private final int NUMBER_OF_INVADERS = 24;
-  private final int NUMBER_OF_BOUNCES_PER_LEVEL = 5;
+  private final int NUMBER_OF_BOUNCES_PER_LEVEL = 3;
   private final float INITIALIZED_LEAD_INVADER_XPOS = width/2-(50*((NUMBER_OF_INVADERS/3)/2));
   private int bouncesThisLevel = 0;
   private int movementSpeed = 1;
@@ -29,7 +29,7 @@ class Mothership{
     }
   }
   
-  public void update(Laser starShipLaser){     
+  public int update(Laser starShipLaser){
     boolean newLevel = false; //Level tracker
     
     for(SpaceInvader attacker: invaders){
@@ -46,6 +46,7 @@ class Mothership{
           starShipLaser.laserDestroyed();
           attacker.receiveDamage(starShipLaser.getDamage());
           attacker.explode();
+          if(isDead()) return -1; //If mothership is destoryed tell game code
         }
         attacker.update(leftDirection, false);
         if(rand.nextInt(fireFrequency) == 7) // (1/fireFrequency) percent chance of firing laser per frame
@@ -58,6 +59,7 @@ class Mothership{
       fireFrequency-=100;
     }
     updateBounceTrackerAndLaserData();
+    return 0;
   }
   
   private void updateBounceTrackerAndLaserData(){
@@ -81,5 +83,11 @@ class Mothership{
     return activeLasers;
   }
   
+  private boolean isDead(){
+    for(SpaceInvader attacker: invaders)
+      if(!attacker.isDead())
+        return false;
+    return true;
+  }
   
 }
