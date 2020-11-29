@@ -5,8 +5,9 @@ This class acts as a scheduler for the SpaceInvaders attack for the purpose of a
 class Mothership{
   
   private ArrayList<SpaceInvader> invaders;
+  private ArrayList<Laser> activeLasers;
   private final int NUMBER_OF_INVADERS = 24;
-  private final int NUMBER_OF_BOUNCES_PER_LEVEL = 5;
+  private final int NUMBER_OF_BOUNCES_PER_LEVEL = 3;
   private final float INITIALIZED_LEAD_INVADER_XPOS = width/2-(50*((NUMBER_OF_INVADERS/3)/2));
   private int bouncesThisLevel = 0;
   private int movementSpeed = 1;
@@ -18,7 +19,7 @@ class Mothership{
   
   Mothership(){
     invaders = new ArrayList();
-    
+    activeLasers = new ArrayList();
     float x = INITIALIZED_LEAD_INVADER_XPOS;
     float y = 0;
     for(int i = 0; i < NUMBER_OF_INVADERS; i++){ 
@@ -28,39 +29,65 @@ class Mothership{
     }
   }
   
-  public void update(){     
-    boolean newLevel = false;
+  public int update(Laser starShipLaser){
+    boolean newLevel = false; //Level tracker
+    
     for(SpaceInvader attacker: invaders){
-      if (bouncesThisLevel == NUMBER_OF_BOUNCES_PER_LEVEL){
-        attacker.update(leftDirection, true);
-        leftDirection = !leftDirection;
-        attacker.getLaser().setSpeed(currentLevel+5);
-        newLevel = true;
+      if(attacker.isDead()) //pretend space invader object does not exist anymore
+        continue;
+      else{
+        if (bouncesThisLevel == NUMBER_OF_BOUNCES_PER_LEVEL){ //If new level: move space invaders down, increase laser speed, set newLevel flag to true
+          attacker.update(leftDirection, true);
+          leftDirection = !leftDirection;
+          attacker.getLaser().setSpeed(currentLevel+5);
+          newLevel = true;
+        }
+        if (!attacker.isDead() && starShipLaser.laserActive() && attacker.isHit(starShipLaser)){
+          starShipLaser.laserDestroyed();
+          attacker.receiveDamage(starShipLaser.getDamage());
+          attacker.explode();
+          if(isDead()) return -1; //If mothership is destoryed tell game code
+        }
+        attacker.update(leftDirection, false);
+        if(rand.nextInt(fireFrequency) == 7) // (1/fireFrequency) percent chance of firing laser per frame
+          attacker.fireGun();
       }
-      attacker.update(leftDirection, false);
-      if(rand.nextInt(fireFrequency) == 7) //1/NUMBER_OF_INVADERS percent chance of firing laser
-        attacker.fireGun();
     }
     if(newLevel){
       bouncesThisLevel = 0;
       currentLevel++;
-      fireFrequency-=50;
+      fireFrequency-=100;
     }
-    updateBounceTracker();
+    updateBounceTrackerAndLaserData();
+    return 0;
   }
   
-  private void updateBounceTracker(){
+  private void updateBounceTrackerAndLaserData(){
+    activeLasers.clear();
     //Find new leader
-    int leaderPos = Integer.MAX_VALUE;
-    for(int i = 0; i < NUMBER_OF_INVADERS; i++)
-      if(!invaders.get(i).isDead() && (i%(NUMBER_OF_INVADERS/3) < leaderPos && leftDirection) || ((NUMBER_OF_INVADERS/3)-i < leaderPos && !leftDirection))
+    int leaderPos = (leftDirection) ? Integer.MAX_VALUE: -1;
+    for(int i = 0; i < NUMBER_OF_INVADERS; i++){
+      if((!invaders.get(i).isDead()) && ((i%(NUMBER_OF_INVADERS/3) < leaderPos && leftDirection) || (i%(NUMBER_OF_INVADERS/3) > leaderPos && !leftDirection)))
         leaderPos = i;
-        
+      if(invaders.get(i).getLaser().laserActive()) // Better implementation coming soon
+        activeLasers.add(invaders.get(i).getLaser());
+    }
     if(invaders.get(leaderPos).hitBoundary()){
       bouncesThisLevel++;   
       leftDirection = !leftDirection;
     }
   }
   
+  
+  public ArrayList<Laser> getSpaceInvaderLasers(){
+    return activeLasers;
+  }
+  
+  private boolean isDead(){
+    for(SpaceInvader attacker: invaders)
+      if(!attacker.isDead())
+        return false;
+    return true;
+  }
   
 }

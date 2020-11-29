@@ -1,14 +1,18 @@
 abstract class Movable extends Killable{
   
-  private Laser laser;
-  private int speed;
+  private Laser laser; // Poor implementation of laser and movable abstract class. Did not plan ahead well.
+  private int speed; // Movement speed of child class's object
 
   Movable(float health, float centerX, float centerY, String imageName, String name, int speed){
     super(health, centerX, centerY, imageName, name);
-    laser = (!name.contains("LASER")) ? new Laser(name+"LASER"): null; 
+    laser = (!name.contains("LASER")) ? new Laser(name+"LASER"): null; // Laser is also a movable object this avoids lasers having lasers
     this.speed = speed;
   }
   
+  /**
+    *
+    *@params HERE
+    */
   public void setSpeed(int speed){this.speed = speed;}
   public int getSpeed(){return speed;}
   
