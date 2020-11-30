@@ -20,8 +20,7 @@ void draw(){
   if(!game()){
     noLoop();
     endScreen();
-  }
-    
+  }  
 }
 
 void endScreen(){
@@ -48,6 +47,7 @@ boolean game(){
         thread("newMothershipCreator"); //avoids long hault in graphics during object creation
       }
       if(ptsToAdd == -1){
+        System.out.println("Removing ship: " + commandship.uniqueID);
         invaders.remove(commandship);
         continue;
       }

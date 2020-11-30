@@ -47,7 +47,7 @@ abstract class Movable extends Killable{
   }
   
   public boolean hitBoundary(){
-    return (getCenterPoint()[0] <= speed || getCenterPoint()[0] >= width-speed);
+    return (getCenterPoint()[0] <= speed || getCenterPoint()[0] >= (width-50)-speed);
   }
   
   public Laser getLaser(){return laser;}
