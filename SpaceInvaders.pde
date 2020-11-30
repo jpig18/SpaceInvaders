@@ -36,18 +36,20 @@ void newMothershipCreator(){
 boolean game(){
   for(Mothership commandship: new ArrayList<Mothership>(invaders)){
       player.update();
-      int ptsToAdd;
+      int ptsToAdd = 0;
       try{
         ptsToAdd = commandship.update(player.getLaser()); //Update mothership
         if(ptsToAdd > 0) 
           score += ptsToAdd;
       } catch(Exception ConcurrentModificationException) { //Most likely unneccessary
         ptsToAdd = -1;
+        if(commandship.getLevel() >= 20){ //if space invaders move past ships guns minus 1000 pts
+          score -= 1000;
+        }
         invaders.add(nextMothership);
         thread("newMothershipCreator"); //avoids long hault in graphics during object creation
       }
       if(ptsToAdd == -1){
-        System.out.println("Removing ship: " + commandship.uniqueID);
         invaders.remove(commandship);
         continue;
       }

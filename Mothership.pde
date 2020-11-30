@@ -79,6 +79,8 @@ class Mothership{
     } //<>//
   }
   
+  public int getLevel(){return currentLevel;}
+  
   
   public ArrayList<Laser> getSpaceInvaderLasers(){
     return activeLasers;
