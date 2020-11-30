@@ -3,28 +3,88 @@ ArrayList <Mothership> invaders;
 Mothership nextMothership;
 int lives;
 int score;
+boolean gameTime;
+PImage logo;
+PImage rules;
+PImage gameOver;
+PFont font;
+PFont underTitle;
+PFont scoreText;
+SoundFile sound;
+int startingMinute;
+int newMinute;
 
 void setup(){
   fullScreen();
   lives = 3;
   score = 0;
+  gameTime = false;
   player = new Starship();
   invaders = new ArrayList();
   invaders.add(new Mothership());
   thread("newMothershipCreator");
+  logo = loadImage("./images/logo.png");
+  gameOver = loadImage("./images/gameOver.png");
+  rules = loadImage("rules.png");
+  sound = new SoundFile(this, "sound.mp3");
+  sound.play();
+  startingMinute = minute();
 }
 
 
 void draw(){
+  
+  music
+  newMinute = minute();
+  if(newMinute > startingMinute + 5){
+    sound.play();
+  }
+  if(!gameTime){
+    titleScreen();
+  }
+  else{
+    theBackground();
+    if(!game()){
+      noLoop();
+      endScreen();
+    }//if
+  }//else
+}
+
+void titleScreen(){
+  textAlign(CENTER);
   theBackground();
-  if(!game()){
-    noLoop();
-    endScreen();
-  }  
+  image(logo, width/2 - 600, height/2 - 500, 1200, 600);
+  underTitle = createFont("Silom", 40);
+  textFont(underTitle);
+  fill(#F9FF4D);
+  text("ARROW KEYS TO NAVIGATE SPACE BAR TO SHOOT", displayWidth/2, displayHeight/2 + 130);
+  underTitle = createFont("Silom", 26);
+  textFont(underTitle);
+  text("SHOOT TO SELECT", displayWidth/2, displayHeight/2 + 280);
+  
+  Button play = new Button(width/2-75, height/2 + 300, "playButton2.png");  
+  Button help = new Button(width/2+25, height/2 + 300, "helpButton2.png");  
+  play.display();
+  help.display();
+  player.update();  
+  if(play.isHit(player.getLaser())){
+    //player.getLaser().laserDestroyed();
+    gameTime = true;
+  }//if
+  if(help.isHit(player.getLaser())){
+    //player.getLaser().laserDestroyed();
+    fill(0);
+    noStroke();
+    rect(0,0, width, height, 0);
+    image(rules, width/2-500, height/2-450, 1000, 900);
+    delay(900);
+    }//if
 }
 
 void endScreen(){
   theBackground();
+  image(gameOver, width/2-325, height/2-400);
   System.out.println("Game over");
   System.out.println("Your score was: " + score);
 }
@@ -78,10 +138,36 @@ boolean game(){
 }
 
 void theBackground(){
-  fill(0);
+ 
+  //bg
+  fill(20);
   stroke(#F9FF4D);
   strokeWeight(5);
   rect(0,0, width, height, 0);
+  
+  //credits
+  font = createFont("Phosphate-Solid", 20);
+  textFont(font);
+  fill(#380862);
+  text("by Connor Page & John Pignato", 169,displayHeight - 10);
+  font = createFont("Phosphate-Solid", 24);
+  textFont(font);
+  fill(#380862);
+  text("CS-255 FA2020", displayWidth - 85,displayHeight - 10);
+  
+  //score box
+  stroke(#F9FF4D);
+  fill(#F5AD39);
+  strokeWeight(2);
+  rect(width/2-201, height-24, 400, 50, 4);
+  
+  //score tracker
+  scoreText = createFont("Silom", 16);
+  textFont(scoreText);
+  fill(0);
+    text("SCORE:                                                          LIVES:", displayWidth/2-25, displayHeight-5);
+    text(score, displayWidth/2-30, displayHeight-5);
+    text(lives, displayWidth/2+160, displayHeight-5);
 }
 
 void keyPressed(){
