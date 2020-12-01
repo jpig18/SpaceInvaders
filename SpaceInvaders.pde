@@ -1,3 +1,7 @@
+//PLEASE ALLOW A FEW SECOND FOR ALL IMAGE DATA AND MP3 FILES TO LOAD BEFORE GAMEPLAY BEGINS
+import processing.sound.*;
+// DOWNLOAD PROCESSING FOUNDATION'S SOUND LIBRARY SKETCH > IMPORT LIBRARY > ADD LIBRARY > SOUND
+
 Starship player;
 ArrayList <Mothership> invaders;
 Mothership nextMothership;
@@ -11,8 +15,7 @@ PFont font;
 PFont underTitle;
 PFont scoreText;
 SoundFile sound;
-int startingMinute;
-int newMinute;
+
 
 void setup(){
   fullScreen();
@@ -27,18 +30,11 @@ void setup(){
   gameOver = loadImage("./images/gameOver.png");
   rules = loadImage("rules.png");
   sound = new SoundFile(this, "sound.mp3");
-  sound.play();
-  startingMinute = minute();
+  sound.loop();
 }
 
 
 void draw(){
-  
-  music
-  newMinute = minute();
-  if(newMinute > startingMinute + 5){
-    sound.play();
-  }
   if(!gameTime){
     titleScreen();
   }

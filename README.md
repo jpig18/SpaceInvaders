@@ -1,2 +1,8 @@
 # SpaceInvaders
 Space Invaders in processing lang (CS255 final project) 
+
+
+
+## Far out in deep space…
+The crew of Earth’s first deep space research ship discover a race of aliens heading towards Earth with malicious intent. In an effort to impede these space invaders the crew of Earth’s ship must fight back the forces as long as they can.  The longer the space invaders are away from their mothership the faster and stronger their attacks become. With every two bounces off the side of the screen the platoon of invaders gains power and moves closer. Every 4000 frames or when a complete annihilation of the enemy platoons on the screen occurs a new mothership with a new platoon appears. For every individual invader destroyed the player will be awarded 100 points. Be warned if a platoon of space invaders reaches level 20 (passing Earth’s starship’s guns) 1000 points will be deducted from the players score. 
+The shields on Earth’s starship can only survive 3 hits from enemy lasers. Using the left and right arrow keys to move and the spacebar to fire lasers the player must fend off the foe. Lasers require a lot of power to generate and as a result the ship must recharge in between blasts. The player cannot fire more than one laser from the ship at a time. In an effort to conserve fuel in deep space, the crew of earth's starship fires lasers at minimum power. If multiple platoons of invaders appear on the screen the captain of Earth’s starship will order a temporary power increase to the guns until the threat is eliminated. Good luck hero!
